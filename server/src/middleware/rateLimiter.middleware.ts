@@ -1,3 +1,6 @@
+// SHOULD THIS REQUEST BE ALLOWED
+
+
 import { Request, Response, NextFunction } from "express";
 import redis from "../config/redis.js";
 

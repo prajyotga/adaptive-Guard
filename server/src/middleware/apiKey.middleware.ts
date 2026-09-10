@@ -1,3 +1,6 @@
+// AUTHENTICATION OR IDENTIFICATION LAYER 
+
+
 import { Request, Response, NextFunction } from "express";
 import APIKey from "../models/APIKey.js";
 

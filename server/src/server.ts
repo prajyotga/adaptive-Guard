@@ -5,6 +5,7 @@ import { apiKeyMiddleware } from "./middleware/apiKey.middleware.js";
 import connectDB from "./config/db.js";
 import apiKeyRoutes from "./routes/apiKey.route.js";
 import { requestLogger } from "./middleware/requestLogger.middleware.js";
+import trafficRoutes from "./routes/traffic.routes.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(requestLogger);
 
 app.use("/api/keys", apiKeyRoutes);
+app.use("/api/traffic", trafficRoutes);
 
 app.get("/", (req, res) => {
     res.json({
