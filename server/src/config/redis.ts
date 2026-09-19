@@ -1,11 +1,11 @@
 import Redis from "ioredis";
 
 const redis = new Redis({
-    host: "localhost",
+    host: "127.0.0.1",
     port: 6379
 });
 
-redis.on("connect", () => {
+redis.on("connect", async () => {
     console.log("Redis connected");
 });
 

@@ -1,28 +1,52 @@
-from app.models.anomaly_detector import AnomalyDetector
+import numpy as np
 
+from app.models.anomaly_detector import AnomalyDetector
+from app.services.risk import calculate_risk
 
 detector = AnomalyDetector()
 
 
 def train_model():
-    training_data = [
-        [10, 120, 0.01, 5],
-        [12, 110, 0.02, 6],
-        [15, 130, 0.01, 7],
-        [9, 100, 0.00, 4],
-        [20, 150, 0.03, 8],
-        [14, 125, 0.02, 6],
-        [11, 115, 0.01, 5],
-        [13, 140, 0.02, 7],
-        [16, 135, 0.01, 8],
-        [18, 145, 0.03, 9]
-    ]
+    np.random.seed(42)
+
+    training_data = []
+
+    for _ in range(200):
+        requests_per_minute = np.random.randint(5, 31)
+
+        average_response_time = np.random.randint(80, 251)
+
+        error_rate = round(
+            np.random.uniform(0.00, 0.08),
+            3
+        )
+
+        unique_ip_count = np.random.randint(3, 51)
+
+        training_data.append([
+            requests_per_minute,
+            average_response_time,
+            error_rate,
+            unique_ip_count
+        ])
 
     detector.train(training_data)
+
+    print("Isolation Forest trained with 200 normal traffic records")
 
 
 def predict_anomaly(features: list[float]):
     if not detector.is_trained:
         train_model()
 
-    return detector.predict(features)
+    result = detector.predict(features)
+
+    risk = calculate_risk(
+        result["prediction"],
+        result["anomaly_score"]
+    )
+
+    return {
+        **result,
+        **risk
+    }

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import RequestLog from "../models/RequestLog.js";
+import { analyzeRecentTraffic } from "../services/adaptiveAnalyzer.service.js";
 
 export const getTrafficLogs = async (
     req: Request,
@@ -120,6 +121,37 @@ export const getTrafficStats = async (
         res.status(500).json({
             success: false,
             message: "Failed to calculate traffic statistics"
+        });
+    }
+};
+
+export const analyzeTraffic = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const apiKey = req.header("x-api-key");
+
+        if (!apiKey) {
+            return res.status(401).json({
+                success: false,
+                message: "API key is required"
+            });
+        }
+
+        const result = await analyzeRecentTraffic(apiKey);
+
+        res.json({
+            success: true,
+            message: "Traffic analyzed successfully",
+            data: result
+        });
+    } catch (error) {
+        console.error("Traffic analysis error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to analyze traffic"
         });
     }
 };
