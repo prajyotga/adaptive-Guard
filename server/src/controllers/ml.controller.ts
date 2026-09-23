@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { analyzeTraffic } from "../services/ml.service.js";
-import { getAdaptiveAction } from "../services/adaptivePolicy.service.js";
+import { getAdaptiveAction   } from "../services/adaptivePolicy.service.js";
 
 export const testML = async (
     req: Request,
@@ -32,3 +32,4 @@ export const testML = async (
         });
     }
 };
+

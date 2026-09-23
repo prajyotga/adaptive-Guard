@@ -1,13 +1,22 @@
 from sklearn.ensemble import IsolationForest
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 
 class AnomalyDetector:
     def __init__(self):
-        self.model = IsolationForest(
-            contamination=0.1,
-            random_state=42
-        )
+        self.model = Pipeline([
+            ("scaler", StandardScaler()),
+            (
+                "isolation_forest",
+                IsolationForest(
+                    contamination=0.05,
+                    random_state=42,
+                    n_estimators=200
+                )
+            )
+        ])
 
         self.is_trained = False
 
@@ -15,15 +24,19 @@ class AnomalyDetector:
         data = np.array(traffic_data)
 
         self.model.fit(data)
+
         self.is_trained = True
 
     def predict(self, traffic_features: list[float]):
         if not self.is_trained:
-            raise RuntimeError("Model has not been trained yet")
+            raise RuntimeError(
+                "Model has not been trained yet"
+            )
 
         data = np.array([traffic_features])
 
         prediction = self.model.predict(data)[0]
+
         score = self.model.decision_function(data)[0]
 
         return {

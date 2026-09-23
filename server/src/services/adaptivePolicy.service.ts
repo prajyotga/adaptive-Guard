@@ -2,7 +2,7 @@ import redis from "../config/redis.js";
 
 export type AdaptiveAction = "ALLOW" | "THROTTLE" | "BLOCK";
 
-const ADAPTIVE_DECISION_TTL = 30;
+const ADAPTIVE_DECISION_TTL = 300;
 
 interface MLResult {
     prediction: number;
@@ -63,3 +63,4 @@ export const getCachedAdaptiveDecision = async (
 
     return null;
 };
+

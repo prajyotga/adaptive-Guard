@@ -11,11 +11,10 @@ export const requestLogger = (
     res.on("finish", async () => {
         try {
             const responseTime = Date.now() - startTime;
-
             const apiKey = res.locals.apiKey;
 
-            await RequestLog.create({
-                apiKey: apiKey?.key || "unknown",
+            const saved = await RequestLog.create({
+                apiKey: apiKey?.key || req.header("x-api-key") || "unknown",
                 endpoint: req.originalUrl,
                 method: req.method,
                 statusCode: res.statusCode,
@@ -24,8 +23,9 @@ export const requestLogger = (
                 timestamp: new Date()
             });
 
+            console.log("RequestLog saved:", saved.apiKey, saved.statusCode);
         } catch (error) {
-            console.error("Request logging error:", error);
+            console.error("RequestLog save failed:", error);
         }
     });
 

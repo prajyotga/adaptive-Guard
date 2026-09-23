@@ -20,6 +20,17 @@ export const analyzeRecentTraffic = async (
         });
 
         const totalRequests = logs.length;
+        if (totalRequests === 0) {
+    return {
+        features: {
+            requests_per_minute: 0,
+            average_response_time: 0,
+            error_rate: 0,
+            unique_ip_count: 0
+        },
+        mlResult: null
+    };
+}
 
         const averageResponseTime =
             totalRequests > 0
@@ -29,9 +40,11 @@ export const analyzeRecentTraffic = async (
                   ) / totalRequests
                 : 0;
 
-        const errorRequests = logs.filter(
-            (log) => log.statusCode >= 400
-        ).length;
+       const errorRequests = logs.filter(
+    (log) =>
+        log.statusCode >= 400 &&
+        log.statusCode !== 429
+).length;
 
         const errorRate =
             totalRequests > 0
