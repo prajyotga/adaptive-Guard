@@ -7,8 +7,15 @@ import apiKeyRoutes from "./routes/apiKey.route.js";
 import { requestLogger } from "./middleware/requestLogger.middleware.js";
 import trafficRoutes from "./routes/traffic.routes.js";
 import mlRoutes from "./routes/ml.routes.js";
+import cors from "cors";
 
 const app = express();
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true
+    })
+);
 
 const PORT = 5000;
 
@@ -23,6 +30,14 @@ app.get("/", (req, res) => {
     res.json({
         message: "AdaptiveGuard API is running!"
     });
+});
+
+app.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    status: "healthy",
+    service: "adaptiveguard-server"
+  });
 });
 
 app.get("/api/test",apiKeyMiddleware, rateLimiter, (req, res) => {
