@@ -1,0 +1,28 @@
+services:
+  backend:
+    build: ./server
+    container_name: adaptive-backend
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      REDIS_HOST: host.docker.internal
+      REDIS_PORT: 6379
+      MONGODB_URI: mongodb://host.docker.internal:27017/adaptiveguard
+      ML_SERVICE_URL: http://ml-service:8000
+    depends_on:
+      - ml-service
+
+  ml-service:
+    build: ./ml-service
+    container_name: adaptive-ml
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./client
+    container_name: adaptive-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

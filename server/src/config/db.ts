@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
     try {
-        await mongoose.connect("mongodb://localhost:27017/adaptiveguard");
+       await mongoose.connect(
+    process.env.MONGODB_URI || "mongodb://localhost:27017/adaptiveguard"
+);
 
         console.log("MongoDB connected");
     } catch (error) {

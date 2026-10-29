@@ -56,12 +56,15 @@ export default function APIKeys() {
 
     try {
       const result = await updateRateLimit(apiKey.key, rateLimit, windowSize);
-      setApiKey((current) => current ? {
+      setApiKey((current) =>
+  current
+    ? {
         ...current,
         rateLimit,
         windowSize,
-        ...(result.data || {})
-      } : current);
+      }
+    : current
+);
       setMessage("Rate limit updated.");
     } catch (error: any) {
       setMessage(error?.response?.data?.message || "Failed to update rate limit.");

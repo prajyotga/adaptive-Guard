@@ -8,6 +8,7 @@ import { requestLogger } from "./middleware/requestLogger.middleware.js";
 import trafficRoutes from "./routes/traffic.routes.js";
 import mlRoutes from "./routes/ml.routes.js";
 import cors from "cors";
+import { register, metricsMiddleware } from "./metrics.js";
 
 const app = express();
 app.use(
@@ -21,10 +22,13 @@ const PORT = 5000;
 
 app.use(express.json());
 app.use(requestLogger);
+app.use(metricsMiddleware);
 
 app.use("/api/keys", apiKeyRoutes);
 app.use("/api/traffic", trafficRoutes);
 app.use("/api/ml", mlRoutes);
+
+
 
 app.get("/", (req, res) => {
     res.json({
@@ -45,6 +49,11 @@ app.get("/api/test",apiKeyMiddleware, rateLimiter, (req, res) => {
         success: true,
         message: "Request accepted!"
     });
+});
+
+app.get("/metrics", async (_req, res) => {
+    res.set("Content-Type", register.contentType);
+    res.end(await register.metrics());
 });
 
 connectDB().then(() => {

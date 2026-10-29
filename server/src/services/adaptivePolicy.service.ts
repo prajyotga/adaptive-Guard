@@ -2,7 +2,7 @@ import redis from "../config/redis.js";
 
 export type AdaptiveAction = "ALLOW" | "THROTTLE" | "BLOCK";
 
-const ADAPTIVE_DECISION_TTL = 30;
+const ADAPTIVE_DECISION_TTL = 300;
 
 interface MLResult {
     prediction: number;
@@ -33,7 +33,12 @@ export const cacheAdaptiveDecision = async (
 ) => {
     const key = `adaptive_decision:${apiKey}`;
 
-    console.log("Caching adaptive decision:", action);
+    console.log(
+    "Caching adaptive decision:",
+    action,
+    "for API key:",
+    apiKey
+);
 
     await redis.set(
         key,
@@ -42,7 +47,12 @@ export const cacheAdaptiveDecision = async (
         ADAPTIVE_DECISION_TTL
     );
 
-    console.log("Adaptive decision cached successfully");
+    const savedDecision = await redis.get(key);
+
+console.log(
+    "Adaptive decision cached successfully:",
+    savedDecision
+);
 };
 
 export const getCachedAdaptiveDecision = async (
